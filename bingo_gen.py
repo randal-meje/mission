@@ -1,5 +1,6 @@
 import random
 import itertools
+import time
 import argparse
 from typing import List, Set, Tuple
 
@@ -107,11 +108,14 @@ def main():
 
     # Use provided seed or default to time-based seeding
     if args.seed is not None:
-        random.seed(args.seed)
+        seed = args.seed
         print(f"Using seed: {args.seed}\n")
     else:
-        random.seed()  # Use system time for randomness
+        seed = time.time_ns()
         print("Using time-based seeding\n")
+        
+    random.seed(seed)
+    print(f"Random seed: {seed}\n")
 
     cards = generate_unique_cards(20)
     
