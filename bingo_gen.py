@@ -88,9 +88,6 @@ def print_card(card: List[List[int]], card_num: int):
 
 def save_cards_to_file(cards: List[List[List[int]]], filename: str):
     """Save cards to a text file."""
-    # Create directory if it doesn't exist
-    os.makedirs(os.path.dirname(filename), exist_ok=True)
-
     with open(filename, 'w') as f:
         for i, card in enumerate(cards, 1):
             f.write(f"{'='*27}\n")
@@ -130,8 +127,10 @@ def main():
         for i, card in enumerate(cards, 1):
             print_card(card, i)
         
-        # Save to file
-        save_cards_to_file(cards, '/mnt/user-data/outputs/bingo_cards.txt')
+        # Save to file in the same directory as the script
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        output_file = os.path.join(script_dir, 'bingo_cards.txt')
+        save_cards_to_file(cards, output_file)
         
         # Verify uniqueness
         print("\n" + "="*50)
