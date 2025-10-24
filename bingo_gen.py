@@ -1,5 +1,6 @@
 import random
 import itertools
+import argparse
 from typing import List, Set, Tuple
 
 def get_rows(card: List[List[int]]) -> List[Tuple[int, ...]]:
@@ -96,11 +97,22 @@ def save_cards_to_file(cards: List[List[List[int]]], filename: str):
     print(f"\nCards saved to {filename}")
 
 def main():
+    parser = argparse.ArgumentParser(description='Generate unique bingo cards')
+    parser.add_argument('--seed', type=int, help='Seed value for random number generator (optional, defaults to time-based seeding)')
+    args = parser.parse_args()
+
     print("Generating 20 unique 5x5 cards with numbers 1-25...")
     print("Ensuring no two cards share any row, column, or diagonal.")
     print("(Lines are compared by number sets, ignoring order)\n")
-    
-    random.seed()  # Use system time for randomness
+
+    # Use provided seed or default to time-based seeding
+    if args.seed is not None:
+        random.seed(args.seed)
+        print(f"Using seed: {args.seed}\n")
+    else:
+        random.seed()  # Use system time for randomness
+        print("Using time-based seeding\n")
+
     cards = generate_unique_cards(20)
     
     if len(cards) == 20:
