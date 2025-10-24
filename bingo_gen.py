@@ -1,5 +1,6 @@
 import random
 import itertools
+import time
 from typing import List, Set, Tuple
 
 def get_rows(card: List[List[int]]) -> List[Tuple[int, ...]]:
@@ -99,8 +100,12 @@ def main():
     print("Generating 20 unique 5x5 cards with numbers 1-25...")
     print("Ensuring no two cards share any row, column, or diagonal.")
     print("(Lines are compared by number sets, ignoring order)\n")
-    
-    random.seed()  # Use system time for randomness
+
+    # Use nanosecond-precision time as seed for different results each run
+    seed = time.time_ns()
+    random.seed(seed)
+    print(f"Random seed: {seed}\n")
+
     cards = generate_unique_cards(20)
     
     if len(cards) == 20:
