@@ -2,6 +2,7 @@ import random
 import itertools
 import time
 import argparse
+import os
 from typing import List, Set, Tuple
 
 def get_rows(card: List[List[int]]) -> List[Tuple[int, ...]]:
@@ -126,8 +127,10 @@ def main():
         for i, card in enumerate(cards, 1):
             print_card(card, i)
         
-        # Save to file
-        save_cards_to_file(cards, '/mnt/user-data/outputs/bingo_cards.txt')
+        # Save to file in the same directory as the script
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        output_file = os.path.join(script_dir, 'bingo_cards.txt')
+        save_cards_to_file(cards, output_file)
         
         # Verify uniqueness
         print("\n" + "="*50)
