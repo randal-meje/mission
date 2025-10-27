@@ -87,15 +87,12 @@ def print_card(card: List[List[int]], card_num: int):
     print(f"{'='*27}")
 
 def save_cards_to_file(cards: List[List[List[int]]], filename: str):
-    """Save cards to a text file."""
+    """Save cards to a text file with each 5x5 grid followed by '=' marker."""
     with open(filename, 'w') as f:
-        for i, card in enumerate(cards, 1):
-            f.write(f"{'='*27}\n")
-            f.write(f"  CARD {i:2d}\n")
-            f.write(f"{'='*27}\n")
+        for card in cards:
             for row in card:
-                f.write("  " + "  ".join(f"{num:2d}" for num in row) + "\n")
-            f.write(f"{'='*27}\n\n")
+                f.write("  ".join(f"{num:2d}" for num in row) + "\n")
+            f.write("=\n")
     print(f"\nCards saved to {filename}")
 
 def main():
