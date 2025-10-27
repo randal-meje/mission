@@ -66,20 +66,23 @@ def load_images_from_folder(folder_path: str) -> Dict[int, str]:
 
 
 def create_composite_image(card: List[List[int]], image_map: Dict[int, str],
-                          cell_size: int = 200) -> Image.Image:
+                          cell_size: int = 200, border_size: int = 10) -> Image.Image:
     """Create a 5x5 composite image from a card grid and image mapping.
 
     Args:
         card: 5x5 grid of numbers
         image_map: Dictionary mapping numbers to image file paths
         cell_size: Size of each cell in pixels (default: 200)
+        border_size: Size of border around and between cells in pixels (default: 10)
 
     Returns:
         PIL Image object of the composite
     """
-    # Create a blank canvas (5x5 grid)
-    composite_width = cell_size * 5
-    composite_height = cell_size * 5
+    # Create a blank canvas (5x5 grid with borders)
+    # Total size includes: outer border + 5 cells + 4 inner borders + outer border
+    # Which equals: 6 borders + 5 cells
+    composite_width = (cell_size * 5) + (border_size * 6)
+    composite_height = (cell_size * 5) + (border_size * 6)
     composite = Image.new('RGB', (composite_width, composite_height), 'white')
 
     # Place each image in the grid
@@ -90,9 +93,10 @@ def create_composite_image(card: List[List[int]], image_map: Dict[int, str],
             img = Image.open(img_path)
             img = img.resize((cell_size, cell_size), Image.Resampling.LANCZOS)
 
-            # Calculate position
-            x = col_idx * cell_size
-            y = row_idx * cell_size
+            # Calculate position with borders
+            # Each cell starts after: outer border + (cell + border) * position
+            x = border_size + col_idx * (cell_size + border_size)
+            y = border_size + row_idx * (cell_size + border_size)
 
             # Paste the image
             composite.paste(img, (x, y))
@@ -101,7 +105,7 @@ def create_composite_image(card: List[List[int]], image_map: Dict[int, str],
 
 
 def generate_card_images(cards: List[List[List[int]]], image_map: Dict[int, str],
-                        output_folder: str, cell_size: int = 200):
+                        output_folder: str, cell_size: int = 200, border_size: int = 10):
     """Generate composite images for all cards.
 
     Args:
@@ -109,20 +113,24 @@ def generate_card_images(cards: List[List[List[int]]], image_map: Dict[int, str]
         image_map: Dictionary mapping numbers to image file paths
         output_folder: Folder to save the generated images
         cell_size: Size of each cell in pixels
+        border_size: Size of border around and between cells in pixels
     """
     # Create output folder if it doesn't exist
     os.makedirs(output_folder, exist_ok=True)
 
+    total_size = (cell_size * 5) + (border_size * 6)
+
     print(f"\nGenerating {len(cards)} bingo card images...")
     print(f"Cell size: {cell_size}x{cell_size} pixels")
-    print(f"Total image size: {cell_size*5}x{cell_size*5} pixels")
+    print(f"Border size: {border_size} pixels")
+    print(f"Total image size: {total_size}x{total_size} pixels")
     print(f"Output folder: {output_folder}\n")
 
     for i, card in enumerate(cards, 1):
         print(f"Creating card {i}/{len(cards)}...", end=' ')
 
         # Create composite image
-        composite = create_composite_image(card, image_map, cell_size)
+        composite = create_composite_image(card, image_map, cell_size, border_size)
 
         # Save the image
         output_path = os.path.join(output_folder, f'bingo_card_{i:02d}.jpg')
@@ -156,6 +164,8 @@ def main():
                         help='Folder to save generated card images (default: output_cards)')
     parser.add_argument('--cell-size', type=int, default=200,
                         help='Size of each cell in pixels (default: 200)')
+    parser.add_argument('--border-size', type=int, default=10,
+                        help='Size of border around and between cells in pixels (default: 10)')
     parser.add_argument('--show-mapping', action='store_true',
                         help='Display the number-to-image mapping')
     args = parser.parse_args()
@@ -212,7 +222,7 @@ def main():
     print(f"✓ Loaded {len(cards)} cards")
 
     # Generate composite images
-    generate_card_images(cards, image_map, output_folder_path, args.cell_size)
+    generate_card_images(cards, image_map, output_folder_path, args.cell_size, args.border_size)
 
 
 if __name__ == "__main__":
