@@ -83,7 +83,8 @@ def create_composite_image(card: List[List[int]], image_map: Dict[int, str],
     # Which equals: 6 borders + 5 cells
     composite_width = (cell_size * 5) + (border_size * 6)
     composite_height = (cell_size * 5) + (border_size * 6)
-    composite = Image.new('RGB', (composite_width, composite_height), 'white')
+    # Use medium gray color (128, 128, 128) for borders
+    composite = Image.new('RGB', (composite_width, composite_height), (128, 128, 128))
 
     # Place each image in the grid
     for row_idx, row in enumerate(card):
