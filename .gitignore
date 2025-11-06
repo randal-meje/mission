@@ -1,6 +1,6 @@
 # Generated output files
 bingo_cards.txt
-output_cards/
+output_cards*/
 
 # macOS system files
 .DS_Store
