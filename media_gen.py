@@ -42,8 +42,11 @@ def read_cards_from_file(filename: str) -> List[List[List[int]]]:
                     continue
 
     # Add the last card if it wasn't followed by '='
-    if current_card and len(current_card) == 5:
-        cards.append(current_card)
+    if current_card:
+        if len(current_card) == 5:
+            cards.append(current_card)
+        else:
+            print(f"Warning: Last card has {len(current_card)} rows (expected 5), skipping")
 
     return cards
 
