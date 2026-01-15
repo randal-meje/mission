@@ -17,7 +17,7 @@ def read_cards_from_file(filename: str) -> List[List[List[int]]]:
     current_card = []
 
     with open(filename, 'r') as f:
-        for line in f:
+        for line_num, line in enumerate(f, 1):
             line = line.strip()
 
             # Skip empty lines
@@ -31,9 +31,15 @@ def read_cards_from_file(filename: str) -> List[List[List[int]]]:
                     current_card = []
             else:
                 # Parse the row of numbers
-                row = [int(num) for num in line.split()]
-                if len(row) == 5:  # Validate it's a 5-number row
-                    current_card.append(row)
+                try:
+                    row = [int(num) for num in line.split()]
+                    if len(row) == 5:  # Validate it's a 5-number row
+                        current_card.append(row)
+                    elif len(row) > 0:  # Non-empty row with wrong number of elements
+                        print(f"Warning: Line {line_num} has {len(row)} numbers (expected 5), skipping")
+                except ValueError as e:
+                    print(f"Warning: Line {line_num} contains invalid data ('{line}'), skipping: {e}")
+                    continue
 
     # Add the last card if it wasn't followed by '='
     if current_card and len(current_card) == 5:
